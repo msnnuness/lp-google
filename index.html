@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#131419">
+<title>Promoções VibeBet — crie sua conta e ative</title>
+<meta name="description" content="Bônus de boas-vindas, giros grátis, cashback e mais. Crie sua conta na VibeBet e ative as promoções disponíveis.">
+<style>
+  :root{
+    --bg:#131419;--card:#191C23;--input:#262A38;
+    --primary:#EE2B51;--tint:#F46D87;--deep:#D8284B;
+    --white:#FFFFFF;--soft:#CBCFD6;--muted:#8E96A5;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;background:var(--bg);color:var(--white);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.45;padding-bottom:96px;
+  }
+  .wrap{width:100%;max-width:560px;margin:0 auto;padding:0 16px}
+
+  header{padding:16px 0 4px;text-align:center}
+  .logo{font-family:Arial Black,Arial,sans-serif;font-size:20px;letter-spacing:.5px}
+  .logo span{color:var(--primary)}
+
+  .hero{padding:22px 0 6px}
+  .pill{display:inline-block;background:var(--input);color:var(--soft);font-size:11px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;border-radius:40px;margin-bottom:16px}
+  h1{font-family:Arial Black,Arial,sans-serif;font-size:34px;line-height:1.05;letter-spacing:-1px;margin:0 0 12px}
+  h1 em{font-style:normal;color:var(--primary)}
+  .hero p{font-size:16px;color:var(--soft);margin:0;max-width:38ch}
+
+  .cta{display:block;background:var(--primary);color:#fff;text-decoration:none;text-align:center;
+    font-weight:800;font-size:18px;padding:19px 16px;border-radius:40px;margin:20px 0 8px;
+    box-shadow:0 8px 24px rgba(238,43,81,.28)}
+  .cta:active{transform:scale(.99)}
+  .cta:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .under{font-size:13px;color:var(--muted);text-align:center;margin:0}
+
+  .count{display:flex;align-items:center;gap:10px;margin:30px 0 14px}
+  .count b{font-family:Arial Black,Arial,sans-serif;font-size:20px}
+  .count i{flex:1;height:1px;background:var(--input);display:block}
+
+  /* cartões de promoção */
+  .promo{background:var(--card);border-radius:16px;padding:18px 18px 18px 20px;margin-bottom:12px;
+    border-left:4px solid var(--primary);position:relative}
+  .promo:nth-child(3n+2){border-left-color:var(--tint)}
+  .promo:nth-child(3n){border-left-color:var(--deep)}
+  .promo .tag{display:inline-block;background:var(--input);color:var(--soft);font-size:10px;font-weight:800;
+    letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;border-radius:6px;margin-bottom:10px}
+  .promo h3{font-family:Arial Black,Arial,sans-serif;font-size:21px;line-height:1.15;margin:0 0 6px;letter-spacing:-.4px}
+  .promo h3 span{color:var(--tint)}
+  .promo p{font-size:14px;color:var(--soft);margin:0 0 14px}
+  .promo .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border-top:1px solid var(--input);padding-top:13px}
+  .promo .cup{font-size:12px;color:var(--muted);line-height:1.3}
+  .promo .cup b{display:block;font-family:Arial Black,Arial,sans-serif;font-size:16px;color:var(--white);letter-spacing:2px}
+  .promo a{background:var(--input);border:1px solid var(--primary);color:#fff;text-decoration:none;
+    font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:11px 18px;border-radius:40px;white-space:nowrap}
+
+  section{padding:32px 0 0}
+  h2{font-family:Arial Black,Arial,sans-serif;font-size:24px;line-height:1.15;letter-spacing:-.5px;margin:0 0 14px}
+
+  ol{list-style:none;counter-reset:s;padding:0;margin:0}
+  ol li{counter-increment:s;background:var(--card);border-radius:14px;padding:16px 16px 16px 60px;position:relative;margin-bottom:10px}
+  ol li::before{content:counter(s);position:absolute;left:16px;top:16px;width:30px;height:30px;border-radius:50%;
+    background:var(--primary);font-family:Arial Black,Arial,sans-serif;font-size:15px;color:#fff;
+    display:flex;align-items:center;justify-content:center}
+  ol li b{display:block;margin-bottom:2px}
+  ol li span{font-size:14px;color:var(--soft)}
+
+  details{background:var(--card);border-radius:14px;padding:16px;margin-bottom:10px}
+  details summary{font-weight:700;cursor:pointer;list-style:none}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+";float:right;color:var(--primary);font-family:Arial Black,Arial,sans-serif}
+  details[open] summary::after{content:"–"}
+  details p{font-size:14px;color:var(--soft);margin:10px 0 0}
+
+  .sticky{position:fixed;left:0;right:0;bottom:0;z-index:9;background:rgba(19,20,25,.92);
+    backdrop-filter:blur(10px);border-top:1px solid var(--input);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .sticky .inner{max-width:560px;margin:0 auto}
+  .sticky .cta{margin:0;box-shadow:none}
+
+  footer{margin-top:36px;border-top:1px solid var(--input);padding:18px 0 30px}
+  .age{display:inline-block;background:var(--primary);color:#fff;font-size:11px;font-weight:800;padding:6px 12px;border-radius:8px;margin-bottom:10px}
+  footer p{font-size:11px;line-height:1.6;color:#6E7686;margin:0 0 8px}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header><div class="logo">VIBE<span>BET</span></div></header>
+
+  <div class="hero">
+    <div class="pill">Promoções ativas</div>
+    <h1>Todas as promoções da VibeBet <em>num lugar só</em></h1>
+    <p>Bônus, giros grátis e cashback ficam liberados assim que a sua conta existe. Cadastro em menos de 1 minuto, sem custo.</p>
+    <a class="cta go" href="#">Criar minha conta grátis</a>
+    <p class="under">Só CPF e e-mail · Depósito e saque via Pix</p>
+  </div>
+
+  <div class="count"><b id="qtd">5 promoções</b><i></i></div>
+
+  <div id="lista"></div>
+
+  <section>
+    <h2>Como ativar qualquer uma delas</h2>
+    <ol>
+      <li><b>Crie sua conta</b><span>Nome, CPF e e-mail. Sem pagar nada nesta etapa.</span></li>
+      <li><b>Escolha a promoção</b><span>Copie o cupom da promo que você quer usar.</span></li>
+      <li><b>Deposite com o cupom</b><span>Cole o cupom no campo de bônus antes de confirmar o Pix.</span></li>
+    </ol>
+    <a class="cta go" href="#">Quero me cadastrar agora</a>
+  </section>
+
+  <section>
+    <h2>Dúvidas rápidas</h2>
+    <details><summary>Preciso depositar para criar a conta?</summary><p>Não. O cadastro é gratuito. O depósito só entra quando você decidir ativar uma promoção.</p></details>
+    <details><summary>Dá para acumular mais de uma promoção?</summary><p>Cada cupom é aplicado em um depósito. Você usa uma de cada vez, na ordem que preferir.</p></details>
+    <details><summary>O que é rollover?</summary><p>É quantas vezes você precisa apostar o valor do bônus antes de ele virar saldo sacável. Cada promoção tem o seu, indicado no card.</p></details>
+    <details><summary>Quanto tempo leva o saque?</summary><p>Saques via Pix caem em minutos, desde que a conta esteja verificada e o rollover da promoção usada tenha sido cumprido.</p></details>
+  </section>
+
+  <footer>
+    <span class="age">+18</span>
+    <p>Proibido para menores de 18 anos. Apostas envolvem risco de perda financeira e não são fonte de renda. Jogue com responsabilidade e aposte apenas o que você pode perder.</p>
+    <p>Se o jogo deixou de ser diversão, procure ajuda. Você pode se autoexcluir a qualquer momento pela sua conta.</p>
+    <p>Promoções sujeitas aos termos e condições publicados na plataforma, que prevalecem sobre qualquer resumo desta página. Valores e condições podem mudar sem aviso. Operação autorizada nos termos da regulamentação da SPA/MF.</p>
+  </footer>
+
+</div>
+
+<div class="sticky"><div class="inner">
+  <a class="cta go" href="#">Criar conta e ativar promoção</a>
+</div></div>
+
+<script>
+/* ==========================================================
+   CONFIGURAÇÃO — edite só este bloco
+   ========================================================== */
+const CONFIG = {
+  link:     "https://vibebet.vip/r/etzlttpi", // destino de TODOS os botões (mantém sua atribuição)
+  passUtms: true
+};
+
+const PROMOS = [
+  {
+    tag:   "Boas-vindas",
+    titulo:"Bônus de <span>100%</span> no primeiro depósito",
+    texto: "Deposite R$ 50 e joga com R$ 100. Vale só para o primeiro depósito da conta.",
+    cupom: "VIBE100",
+    nota:  "Rollover 12x · mín. R$ 20"
+  },
+  {
+    tag:   "Giros grátis",
+    titulo:"<span>100 giros</span> no Fortune Tiger",
+    texto: "Deposite a partir de R$ 20 com o cupom e os giros caem direto no jogo.",
+    cupom: "GIROS100",
+    nota:  "R$ 0,40 por giro · 7 dias"
+  },
+  {
+    tag:   "Cashback",
+    titulo:"<span>15% de volta</span> toda segunda",
+    texto: "Se a semana não foi boa, parte do que você perdeu volta como saldo na segunda-feira.",
+    cupom: "SEGUNDA15",
+    nota:  "Até R$ 500 por semana"
+  },
+  {
+    tag:   "Indicação",
+    titulo:"<span>R$ 25</span> por amigo indicado",
+    texto: "Cada amigo que criar conta pelo seu link e depositar coloca R$ 25 na sua conta.",
+    cupom: "INDICA25",
+    nota:  "Sem limite de indicações"
+  },
+  {
+    tag:   "Recarga",
+    titulo:"<span>50% extra</span> nas recargas de quinta",
+    texto: "Toda quinta, o depósito rende metade a mais para você seguir jogando.",
+    cupom: "QUINTA50",
+    nota:  "Rollover 10x · até R$ 200"
+  }
+];
+
+/* ==========================================================
+   MONTAGEM
+   ========================================================== */
+let destino = CONFIG.link;
+if (CONFIG.passUtms && location.search.length > 1) {
+  destino += (destino.includes("?") ? "&" : "?") + location.search.slice(1);
+}
+
+function track(ev, data) {
+  try { if (window.fbq) fbq("track", ev, data || {}); } catch (e) {}
+  try { window.dataLayer = window.dataLayer || []; dataLayer.push({ event: ev, ...(data || {}) }); } catch (e) {}
+}
+
+document.getElementById("qtd").textContent =
+  PROMOS.length + (PROMOS.length === 1 ? " promoção" : " promoções");
+
+document.getElementById("lista").innerHTML = PROMOS.map(p => `
+  <div class="promo">
+    <span class="tag">${p.tag}</span>
+    <h3>${p.titulo}</h3>
+    <p>${p.texto}</p>
+    <div class="foot">
+      <div class="cup">Cupom<b>${p.cupom}</b>${p.nota}</div>
+      <a class="go" href="#" data-promo="${p.cupom}">Ativar</a>
+    </div>
+  </div>`).join("");
+
+document.querySelectorAll("a.go").forEach(a => {
+  a.href = destino;
+  a.rel = "nofollow noopener";
+  a.addEventListener("click", () => track("Lead", {
+    content_name: "lp-promocoes-vibebet",
+    content_category: a.dataset.promo || "cta-principal"
+  }));
+});
+</script>
+</body>
+</html>
