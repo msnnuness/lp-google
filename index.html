@@ -1,578 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Roleta de Prêmios</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Acesso Liberado</title>
+<meta name="robots" content="noindex, nofollow">
 <style>
-  :root{
-    --bg:#131419;
-    --card:#191C23;
-    --input:#262A38;
-    --primary:#EE2B51;
-    --tint:#F46D87;
-    --dark:#D8284B;
-    --txt:#FFFFFF;
-    --txt2:#CBCFD6;
-    --txt3:#8E96A5;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
   body{
-    background:var(--bg);
-    color:var(--txt);
     font-family:Arial,Helvetica,sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:24px 16px 40px;
+    background:radial-gradient(ellipse at 50% 30%,#0c2d55 0%,#071b38 45%,#020a1a 100%);
+    color:#fff;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;min-height:100dvh;padding:24px 16px;
   }
-  .topo{width:100%;max-width:440px;text-align:center}
-  .marca{
-    font-family:"Arial Black",Arial,sans-serif;
-    font-size:15px;letter-spacing:3px;color:var(--tint);margin:0 0 18px
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,rgba(0,230,118,.025) 0 1px,transparent 1px 22px);
   }
-  h1{
-    font-family:"Arial Black",Arial,sans-serif;
-    font-size:30px;line-height:1.05;margin:0 0 10px;letter-spacing:-.5px
-  }
-  .sub{font-size:15px;line-height:1.5;color:var(--txt2);margin:0 auto 22px;max-width:34ch}
+  .wrap{position:relative;width:100%;max-width:420px;text-align:center}
+  .stage{transition:opacity .5s ease,transform .5s ease}
+  .stage.hide{opacity:0;transform:scale(.96);pointer-events:none;position:absolute;inset:0}
 
-  /* ---------- roleta ---------- */
-  .palco{position:relative;width:100%;max-width:440px;display:flex;justify-content:center;margin-bottom:8px}
-  .roda-wrap{position:relative;width:100%;max-width:380px;aspect-ratio:1/1}
-  canvas{width:100%;height:100%;display:block;border-radius:50%}
-  .ponteiro{
-    position:absolute;top:-6px;left:50%;transform:translateX(-50%);
-    width:0;height:0;z-index:3;
-    border-left:15px solid transparent;
-    border-right:15px solid transparent;
-    border-top:30px solid var(--primary);
-    filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));
-  }
-  .ponteiro:after{
-    content:"";position:absolute;top:-26px;left:-9px;
-    width:18px;height:18px;border-radius:50%;background:var(--primary);
-  }
-  .hub{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:31%;height:31%;border-radius:50%;z-index:2;
-    background:var(--primary);color:#fff;border:5px solid var(--bg);
-    font-family:"Arial Black",Arial,sans-serif;font-size:17px;letter-spacing:1px;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 20px rgba(0,0,0,.55);
-    transition:transform .12s ease, background .2s ease;
-  }
-  .hub:hover{background:var(--dark)}
-  .hub:active{transform:translate(-50%,-50%) scale(.94)}
-  .hub:focus-visible{outline:3px solid var(--tint);outline-offset:4px}
-  .hub[disabled]{background:var(--input);color:var(--txt3);cursor:not-allowed}
-  .giros{font-size:13px;color:var(--txt3);text-align:center;margin:14px 0 0;min-height:18px}
+  /* ===== Loader ===== */
+  .ring{position:relative;width:180px;height:180px;margin:0 auto 56px}
+  .ring .halo{position:absolute;inset:0;border-radius:50%;
+    border:1px solid rgba(0,230,118,.18);
+    box-shadow:0 0 60px rgba(0,200,100,.18),inset 0 0 40px rgba(0,200,100,.08)}
+  .ring .halo2{inset:18px;border:1px dashed rgba(0,230,118,.15);animation:spin 14s linear infinite reverse}
+  .ring .orbit{position:absolute;inset:0;animation:spin 2.4s linear infinite}
+  .ring .orbit span{position:absolute;border-radius:50%;background:#00e676;
+    box-shadow:0 0 12px #00c853,0 0 24px rgba(0,230,118,.6)}
+  .ring .orbit span:nth-child(1){width:12px;height:12px;left:28px;bottom:22px}
+  .ring .orbit span:nth-child(2){width:7px;height:7px;left:52px;bottom:42px;background:#6fc3ff;box-shadow:none;opacity:.8}
+  .ring .core{position:absolute;inset:34px;border-radius:50%;
+    background:radial-gradient(circle,#0f2a50 0%,#051329 100%);
+    border:2px solid rgba(0,200,100,.45);
+    box-shadow:0 0 30px rgba(0,200,100,.25);
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .pct{font-family:"Arial Black",Arial,sans-serif;font-style:italic;font-weight:900;
+    font-size:24px;color:#5dffa3;text-shadow:0 0 12px rgba(0,230,118,.6)}
+  .core .line{width:70%;height:2px;margin-top:12px;
+    background:linear-gradient(90deg,transparent,#00c853,transparent)}
 
-  /* ---------- formulário ---------- */
-  .card{
-    width:100%;max-width:440px;background:var(--card);border-radius:14px;
-    padding:20px 18px;margin-top:22px
-  }
-  .card p.aux{font-size:14px;color:var(--txt2);margin:0 0 18px;line-height:1.5}
-  label{display:block;font-size:13px;color:var(--txt2);margin:0 0 6px}
-  input{
-    width:100%;background:var(--input);border:1px solid var(--input);color:#fff;
-    border-radius:10px;padding:13px 14px;font-size:16px;font-family:inherit;margin-bottom:14px
-  }
-  input::placeholder{color:#717A8B}
-  input:focus{outline:none;border-color:var(--tint)}
-  input[aria-invalid="true"]{border-color:var(--primary)}
-  .erro{font-size:12px;color:var(--tint);margin:-10px 0 12px;display:none}
-  .erro.on{display:block}
-  .btn{
-    display:block;width:100%;border:0;border-radius:40px;background:var(--primary);
-    color:#fff;font-family:"Arial Black",Arial,sans-serif;font-size:17px;padding:16px;
-    cursor:pointer;text-align:center;text-decoration:none
-  }
-  .btn:hover{background:var(--dark)}
-  .btn:focus-visible{outline:3px solid var(--tint);outline-offset:3px}
-  .debug{
-    width:100%;max-width:440px;background:#0B0C10;border:1px solid var(--input);border-radius:10px;
-    color:var(--txt2);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.5;
-    padding:14px;margin-top:20px;white-space:pre-wrap;word-break:break-word;text-align:left
-  }
-  .debug b{color:var(--tint)}
-  .consent{font-size:11px;color:var(--txt3);line-height:1.5;margin:12px 0 0;text-align:center}
-  .consent a{color:var(--txt2)}
-  .btn.outline{background:var(--input);border:1px solid var(--primary);font-size:14px;padding:13px;margin-top:10px}
-  .btn.outline:hover{background:#2E3345}
+  h1{font-family:"Arial Black",Arial,sans-serif;font-style:italic;font-weight:900;
+    font-size:42px;line-height:1.02;letter-spacing:-.5px;text-transform:uppercase}
+  h1 .w{color:#fff}
+  h1 .o{display:block;color:#00e676;text-shadow:0 0 18px rgba(0,230,118,.35)}
+  .sub{margin-top:20px;font-size:12px;letter-spacing:3px;color:#8fa6c4;
+    text-transform:uppercase;font-weight:bold;min-height:16px;transition:opacity .3s}
+  .bars{display:flex;gap:8px;justify-content:center;margin-top:36px}
+  .bars i{display:block;width:66px;height:7px;border-radius:6px;background:#14304f;overflow:hidden;position:relative}
+  .bars i b{position:absolute;inset:0;width:0;border-radius:6px;
+    background:linear-gradient(90deg,#00b85c,#5dffa3);transition:width .25s linear}
 
-  /* ---------- resultado ---------- */
-  .overlay{
-    position:fixed;inset:0;background:rgba(10,11,15,.88);z-index:20;
-    display:none;align-items:center;justify-content:center;padding:20px
-  }
-  .overlay.on{display:flex}
-  .modal{
-    background:var(--card);border-radius:18px;padding:26px 20px;width:100%;max-width:400px;text-align:center
-  }
-  .modal .chapeu{font-size:13px;color:var(--txt3);letter-spacing:2px;margin:0 0 10px}
-  .modal h2{font-family:"Arial Black",Arial,sans-serif;font-size:26px;line-height:1.15;margin:0 0 8px;color:var(--tint)}
-  .modal .desc{font-size:14px;color:var(--txt2);line-height:1.55;margin:0 0 18px}
-  .cupom{
-    border:2px dashed var(--primary);border-radius:14px;padding:16px 12px;margin:0 0 8px;background:#15171D
-  }
-  .cupom .rot{font-size:11px;color:var(--txt3);letter-spacing:2px;margin:0 0 8px}
-  .cupom .cod{font-family:"Arial Black",Arial,sans-serif;font-size:30px;letter-spacing:4px;margin:0}
-  .auto{
-    background:#15171D;border-left:4px solid var(--primary);border-radius:0 12px 12px 0;
-    font-size:14px;color:var(--txt2);line-height:1.55;text-align:left;padding:14px 16px;margin:0 0 18px
-  }
-  .auto:empty{display:none}
-  .copiar{
-    background:none;border:0;color:var(--tint);font-size:13px;cursor:pointer;padding:8px;margin-bottom:14px
-  }
-  .fecha{background:none;border:0;color:var(--txt3);font-size:13px;cursor:pointer;padding:12px;margin-top:6px}
+  /* ===== Liberado ===== */
+  .check{width:120px;height:120px;margin:0 auto 40px;border-radius:50%;
+    background:radial-gradient(circle,#00e676 0%,#00b85c 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 12px rgba(0,230,118,.12),0 0 60px rgba(0,200,100,.5);
+    animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
+  .check svg{width:56px;height:56px}
+  .check path{stroke:#fff;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:60;stroke-dashoffset:60;animation:draw .5s .35s ease forwards}
+  .ok-sub{margin-top:16px;font-size:14px;letter-spacing:3px;color:#8fa6c4;text-transform:uppercase;font-weight:bold}
+  .btn{display:block;width:100%;margin-top:40px;padding:20px 16px;border-radius:14px;
+    background:linear-gradient(90deg,#00b85c,#5dffa3);color:#04122a;text-decoration:none;
+    font-family:"Arial Black",Arial,sans-serif;font-weight:900;font-size:20px;letter-spacing:1px;
+    box-shadow:0 10px 30px rgba(0,200,100,.4);animation:pulse 1.6s ease-in-out infinite}
+  .btn:active{transform:scale(.98)}
+  .legal{margin-top:28px;font-size:11px;color:#5b7293;letter-spacing:.5px;line-height:1.5}
 
-  .legal{
-    width:100%;max-width:440px;background:var(--primary);border-radius:8px;
-    text-align:center;font-size:12px;padding:10px;margin-top:26px;line-height:1.5
-  }
-  .fine{max-width:440px;font-size:11px;color:var(--txt3);line-height:1.6;text-align:center;margin-top:14px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(0,200,100,.4)}
+    50%{transform:scale(1.03);box-shadow:0 10px 40px rgba(0,200,100,.65)}}
 
-  @media (max-width:360px){ h1{font-size:26px} .hub{font-size:15px} }
-  @media (prefers-reduced-motion:reduce){ .hub{transition:none} }
+  @media (max-width:380px){
+    h1{font-size:34px}.bars i{width:56px}.ring{width:160px;height:160px}
+  }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="topo">
-  <p class="marca" id="marca">VIBEBET</p>
-  <h1 id="headline">Gire e leve seu bônus</h1>
-  <p class="sub" id="subline">Um giro por pessoa. O prêmio cai direto na sua conta em até 5 minutos.</p>
-</div>
-
-<div class="palco">
-  <div class="roda-wrap">
-    <div class="ponteiro"></div>
-    <canvas id="roda" width="760" height="760" role="img" aria-label="Roleta de prêmios"></canvas>
-    <button class="hub" id="girar">GIRAR</button>
-  </div>
-</div>
-<p class="giros" id="status"></p>
-
-<div class="card" id="formCard">
-  <p class="aux" id="formAux">Preencha o e-mail e o WhatsApp para liberar seu giro.</p>
-
-  <label for="email">E-mail</label>
-  <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com">
-  <p class="erro" id="e-email">Confira o e-mail digitado.</p>
-
-  <label for="tel">WhatsApp</label>
-  <input id="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(11) 91234-5678">
-  <p class="erro" id="e-tel">Confira o DDD e o número.</p>
-
-  <button class="btn" id="liberar">Liberar meu giro grátis</button>
-  <p class="consent">Ao continuar, você concorda em receber contato por e-mail e WhatsApp sobre promoções e aceita a <a id="politica" href="#">política de privacidade</a>.</p>
-</div>
-
-<div class="legal">+18 Proibido para menores. Apostas envolvem riscos. Jogue de forma consciente.</div>
-<p class="fine" id="fine">Uma participação por CPF, válida para contas verificadas. Todos os participantes desta ação recebem o mesmo prêmio promocional. Operadora autorizada nos termos da Portaria SPA/MF.</p>
-
-<pre class="debug" id="debug" hidden></pre>
-
-<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-live="polite">
-  <div class="modal">
-    <p class="chapeu" id="chapeu">SEU PRÊMIO</p>
-    <h2 id="premioNome">—</h2>
-    <p class="desc" id="premioDesc"></p>
-    <div class="cupom" id="blocoCupom" hidden>
-      <p class="rot">USE O CUPOM</p>
-      <p class="cod" id="premioCupom">—</p>
+  <!-- Etapa 1: carregamento -->
+  <div class="stage" id="loading">
+    <div class="ring">
+      <div class="halo"></div>
+      <div class="halo halo2"></div>
+      <div class="orbit"><span></span><span></span></div>
+      <div class="core">
+        <div class="pct" id="pct">0%</div>
+        <div class="line"></div>
+      </div>
     </div>
-    <button class="copiar" id="copiar" hidden>Copiar código</button>
-    <p class="auto" id="auto"></p>
-    <a class="btn" id="cta" href="#">Criar conta e ativar os giros</a>
-    <button class="btn outline" id="denovo">Girar de novo</button>
-    <button class="fecha" id="fechar">Voltar</button>
+    <h1><span class="w">Analisando</span><span class="o">Seu Acesso</span></h1>
+    <div class="sub" id="sub">Validando conexão segura</div>
+    <div class="bars">
+      <i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i>
+    </div>
   </div>
+
+  <!-- Etapa 2: acesso liberado -->
+  <div class="stage hide" id="done">
+    <div class="check">
+      <svg viewBox="0 0 52 52"><path d="M14 27 l8 8 l16 -18"/></svg>
+    </div>
+    <h1><span class="w">Acesso</span><span class="o">Liberado!</span></h1>
+    <div class="ok-sub">Tudo certo por aqui</div>
+    <a class="btn" id="cta" href="https://jogofacil.net.br/r/hgdaniz1" rel="noopener">ENTRAR AGORA ➜</a>
+    <div class="legal">+18 · Proibido para menores · Jogue com responsabilidade</div>
+  </div>
+
 </div>
 
 <script>
-/* =======================================================================
-   CONFIGURAÇÃO — mexa só daqui até o fim do bloco CONFIG
-   ======================================================================= */
-const CONFIG = {
-  marca: "VIBEBET",
-  headline: "Um giro, um prêmio",
-  subline: "Deixe seu contato, gire a roleta e veja o que você leva hoje.",
+(function(){
+  var DURACAO = 4200; // tempo total do carregamento (ms)
+  var textos = [
+    "Validando conexão segura",
+    "Verificando disponibilidade",
+    "Preparando seu acesso",
+    "Finalizando"
+  ];
+  var pct = document.getElementById("pct");
+  var sub = document.getElementById("sub");
+  var bars = document.querySelectorAll(".bars b");
+  var atual = -1, inicio = null;
 
-  // Pede e-mail/telefone antes de girar. false = gira direto.
-  exigirCadastro: true,
-
-  // Quantos giros cada pessoa pode dar. 0 = ilimitado (use 0 só para testar).
-  girosPermitidos: 1,
-
-  // Índice do prêmio que sempre sai (0 = o primeiro da lista abaixo).
-  // Coloque null para voltar ao sorteio por peso.
-  resultadoFixo: 0,
-
-  // Para onde vai o botão do resultado
-  linkCTA: "https://vibebet.vip/r/etzlttpi",
-
-  // Política de privacidade citada no rodapé do formulário
-  linkPolitica: "https://vibebet.vip/politica-de-privacidade",
-
-  // Banco Supabase. Deixe url e anonKey em branco para desligar.
-  supabase: {
-    url: "https://wkweqhszjujvevnbhhzg.supabase.co",
-    anonKey: "sb_publishable_0QsDv6tagm5DUVbuf8IXBQ_HSGhI_Mg",
-    tabela: "roleta_leads",
-    dedupePorTelefone: false   // true só funciona com o índice único do arquivo .sql
-  },
-
-  // Webhook extra (Make, SendGrid, sua API). Opcional, funciona junto com o Supabase.
-  webhook: "",
-
-  // Pesos = chance relativa. Não precisa somar 100.
-  // Quanto maior o peso, mais vezes o prêmio sai.
-  premios: [
-    { nome:"5 giros\ngrátis",    rotulo:"5 giros grátis",         peso:60, cor:"#EE2B51",
-      desc:"5 giros no Fortune Tiger, creditados automaticamente na sua conta.",
-      aviso:"Crie sua conta com este mesmo e-mail e os giros entram sozinhos. Não precisa de cupom." },
-    { nome:"R$ 5\nem bônus",     rotulo:"R$ 5 em bônus",          peso:20, cor:"#191C23",
-      desc:"R$ 5 de bônus de cassino com rollover de 10x." },
-    { nome:"25 giros\ngrátis",   rotulo:"25 giros grátis",        peso:15, cor:"#EE2B51",
-      desc:"25 giros no Fortune Rabbit, liberados após um depósito de R$ 30." },
-    { nome:"Cashback\n10%",      rotulo:"Cashback de 10%",        peso:12, cor:"#191C23",
-      desc:"10% de volta sobre a perda líquida do dia, até R$ 100." },
-    { nome:"R$ 20\nem bônus",    rotulo:"R$ 20 em bônus",         peso:10, cor:"#EE2B51",
-      desc:"R$ 20 de bônus com rollover de 15x, válido por 7 dias." },
-    { nome:"50 giros\ngrátis",   rotulo:"50 giros grátis",        peso:7,  cor:"#191C23",
-      desc:"50 giros no Fortune Ox, liberados após um depósito de R$ 50." },
-    { nome:"R$ 50\nem bônus",    rotulo:"R$ 50 em bônus",         peso:4,  cor:"#EE2B51",
-      desc:"R$ 50 de bônus com rollover de 20x, válido por 7 dias." },
-    { nome:"Rodada\nR$ 100",     rotulo:"Rodada premiada R$ 100", peso:2,  cor:"#F46D87",
-      desc:"Uma rodada de R$ 100 no jogo em destaque da semana." }
-  ]
-};
-/* ===================== FIM DA CONFIGURAÇÃO ============================ */
-
-/* ---- textos da página ---- */
-document.getElementById("marca").textContent = CONFIG.marca;
-document.getElementById("headline").textContent = CONFIG.headline;
-document.getElementById("subline").textContent = CONFIG.subline;
-document.getElementById("cta").href = CONFIG.linkCTA;
-document.getElementById("politica").href = CONFIG.linkPolitica || "#";
-if(!CONFIG.exigirCadastro) document.getElementById("formCard").style.display = "none";
-
-
-/* ---- desenho da roleta ---- */
-const cv = document.getElementById("roda");
-const ctx = cv.getContext("2d");
-const P = CONFIG.premios;
-const N = P.length;
-const passo = (Math.PI*2)/N;
-let giro = 0;              // rotação atual em radianos
-let rodando = false;
-let liberado = !CONFIG.exigirCadastro;
-let girosUsados = 0;
-
-const ilimitado = () => CONFIG.girosPermitidos === 0;
-const restantes = () => ilimitado() ? Infinity : CONFIG.girosPermitidos - girosUsados;
-
-function atualizarBotao(){
-  const b = document.getElementById("girar");
-  const acabou = restantes() <= 0;
-  b.disabled = acabou;
-  b.textContent = acabou ? "FIM" : "GIRAR";
-}
-
-function desenhar(){
-  const s = cv.width, r = s/2, raio = r - s*0.02;
-  const hub = raio*0.36;                    // onde o botão central começa
-  const margem = raio*0.08;
-  const espaco = raio - hub - margem;       // comprimento útil para o texto
-  ctx.clearRect(0,0,s,s);
-  ctx.save();
-  ctx.translate(r,r);
-  ctx.rotate(giro);
-
-  for(let i=0;i<N;i++){
-    const a0 = i*passo - passo/2, a1 = i*passo + passo/2;
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.arc(0,0,raio,a0,a1);
-    ctx.closePath();
-    ctx.fillStyle = P[i].cor;
-    ctx.fill();
-    ctx.strokeStyle = "#131419";
-    ctx.lineWidth = Math.max(2, s*0.006);
-    ctx.stroke();
-
-    // texto do prêmio — tudo proporcional ao raio
-    ctx.save();
-    ctx.rotate(i*passo);
-    ctx.textAlign = "right";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#FFFFFF";
-    const linhas = P[i].nome.split("\n");
-    let tam = raio*0.10;
-    ctx.font = "900 " + tam + 'px "Arial Black", Arial, sans-serif';
-    const maior = Math.max.apply(null, linhas.map(l => ctx.measureText(l).width));
-    if(maior > espaco){                     // encolhe até caber na fatia
-      tam = tam * (espaco/maior);
-      ctx.font = "900 " + tam + 'px "Arial Black", Arial, sans-serif';
+  // Mantém UTMs / parâmetros da URL no link do botão
+  try{
+    var qs = window.location.search;
+    if(qs && qs.length > 1){
+      var a = document.getElementById("cta");
+      a.href += (a.href.indexOf("?") > -1 ? "&" : "?") + qs.slice(1);
     }
-    const y0 = -((linhas.length-1)*tam*0.55);
-    linhas.forEach((l,k) => ctx.fillText(l, raio - margem, y0 + k*tam*1.1));
-    ctx.restore();
-  }
-
-  // aro externo + pinos entre as fatias
-  ctx.beginPath(); ctx.arc(0,0,raio,0,Math.PI*2);
-  ctx.strokeStyle = "#0E0F13"; ctx.lineWidth = raio*0.045; ctx.stroke();
-  for(let i=0;i<N;i++){
-    const a = i*passo + passo/2;
-    ctx.beginPath();
-    ctx.arc(Math.cos(a)*(raio-1), Math.sin(a)*(raio-1), raio*0.016, 0, Math.PI*2);
-    ctx.fillStyle = "#F46D87"; ctx.fill();
-  }
-  ctx.restore();
-}
-desenhar();
-
-/* ---- sorteio ponderado ---- */
-function sortear(){
-  if(Number.isInteger(CONFIG.resultadoFixo)) return CONFIG.resultadoFixo;
-  const total = P.reduce((s,p)=>s+p.peso,0);
-  let r = Math.random()*total;
-  for(let i=0;i<N;i++){ r -= P[i].peso; if(r<0) return i; }
-  return N-1;
-}
-
-/* ---- animação ---- */
-const menosMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const easeOut = t => 1 - Math.pow(1-t, 4);
-
-function girarPara(idx){
-  const voltas = menosMovimento ? 1 : 6;
-  const jitter = (Math.random()-0.5) * passo * 0.6;          // não para sempre no centro
-  const volta = Math.PI*2;
-  const atual = ((giro % volta) + volta) % volta;
-  const destino = ((-Math.PI/2 - idx*passo + jitter) % volta + volta) % volta;
-  let avanco = destino - atual;
-  if(avanco < 0) avanco += volta;                            // sempre gira para frente
-  const alvo = giro + avanco + volta*voltas;
-  const inicio = giro;
-  const dur = menosMovimento ? 700 : 5200;
-  const t0 = performance.now();
-  let ultimaFatia = -1;
-
-  function frame(now){
-    const t = Math.min((now-t0)/dur, 1);
-    giro = inicio + (alvo - inicio) * easeOut(t);
-    desenhar();
-    const fatia = Math.floor(((giro % (Math.PI*2)) / passo));
-    if(fatia !== ultimaFatia){ ultimaFatia = fatia; tick(); }
-    if(t < 1) requestAnimationFrame(frame);
-    else finalizar(idx);
-  }
-  requestAnimationFrame(frame);
-}
-
-/* ---- tique do ponteiro ---- */
-let audio;
-function tick(){
-  if(menosMovimento) return;
-  try{
-    audio = audio || new (window.AudioContext||window.webkitAudioContext)();
-    const o = audio.createOscillator(), g = audio.createGain();
-    o.frequency.value = 900; o.type = "square";
-    g.gain.setValueAtTime(.03, audio.currentTime);
-    g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime+.05);
-    o.connect(g); g.connect(audio.destination);
-    o.start(); o.stop(audio.currentTime+.05);
   }catch(e){}
-}
 
-/* ---- resultado ---- */
-function abrirModal(o){
-  document.getElementById("chapeu").textContent = o.chapeu;
-  document.getElementById("premioNome").textContent = o.rotulo;
-  document.getElementById("premioDesc").textContent = o.desc || "";
-  const temCupom = !!o.cupom;
-  document.getElementById("blocoCupom").hidden = !temCupom;
-  document.getElementById("copiar").hidden = !temCupom;
-  document.getElementById("premioCupom").textContent = o.cupom || "";
-  document.getElementById("copiar").textContent = "Copiar código";
-  document.getElementById("auto").textContent = o.aviso || "";
-  const b = document.getElementById("denovo");
-  if(o.botao){ b.textContent = o.botao; b.style.display = "block"; }
-  else b.style.display = "none";
-  document.getElementById("overlay").classList.add("on");
-}
+  function ease(t){ return t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
 
-function finalizar(idx){
-  rodando = false;
-  const p = P[idx];
-  const sobra = restantes();
-  abrirModal({
-    chapeu: "VOCÊ GANHOU",
-    rotulo: p.rotulo,
-    desc: p.desc || "",
-    cupom: p.cupom,
-    aviso: p.aviso || "",
-    botao: sobra > 0 ? "Girar de novo" : null
-  });
-  document.getElementById("status").textContent =
-    "Prêmio: " + p.rotulo + (ilimitado() ? "" : sobra > 0 ? " · faltam " + sobra + " giro(s)" : " · giros encerrados");
-  atualizarBotao();
-  enviar("roleta", p);
-}
+  function tick(ts){
+    if(!inicio) inicio = ts;
+    var t = Math.min((ts - inicio) / DURACAO, 1);
+    var v = Math.round(ease(t) * 100);
+    pct.textContent = v + "%";
 
-/* ---- envio do lead + prêmio ---- */
-function utms(){
-  const q = new URLSearchParams(location.search), o = {};
-  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","sub_id","click_id","fbclid","gclid"]
-    .forEach(k => { if(q.get(k)) o[k] = q.get(k); });
-  return o;
-}
-function telefoneE164(v){
-  let d = (v||"").replace(/\D/g,"");
-  if(d.startsWith("55") && d.length >= 12) d = d.slice(2);
-  if(d.length === 10) d = d.slice(0,2) + "9" + d.slice(2);   // adiciona o 9º dígito
-  return d.length === 11 ? "55"+d : "";
-}
-function enviar(evento, p){
-  const dados = {
-    evento: evento,                                          // "cadastro" ou "roleta"
-    email: document.getElementById("email").value.trim().toLowerCase(),
-    telefone: telefoneE164(document.getElementById("tel").value),
-    premio: p.rotulo,
-    cupom: p.cupom || "",
-    data: new Date().toISOString(),
-    pagina: location.href,
-    ...utms()
-  };
-  const sb = CONFIG.supabase || {};
-  if(sb.url && sb.anonKey) salvarSupabase(dados);
-  if(CONFIG.webhook) enviarWebhook(dados);
-  if(!sb.url && !CONFIG.webhook) console.log("[roleta] resultado:", dados);
-}
+    for(var i=0;i<4;i++){
+      var parte = Math.min(Math.max((v - i*25) / 25, 0), 1);
+      bars[i].style.width = (parte*100) + "%";
+    }
 
-const DEBUG = new URLSearchParams(location.search).has("debug");
+    var idx = Math.min(Math.floor(v / 25), 3);
+    if(idx !== atual){
+      atual = idx;
+      sub.style.opacity = 0;
+      setTimeout(function(){ sub.textContent = textos[atual]; sub.style.opacity = 1; }, 150);
+    }
 
-function log(txt){
-  console.log("[roleta]", txt);
-  if(!DEBUG) return;
-  const d = document.getElementById("debug");
-  d.hidden = false;
-  d.textContent += txt + "\n";
-}
-
-function salvarSupabase(dados){
-  const sb = CONFIG.supabase;
-  const base = sb.url.replace(/\/+$/, "");
-  const dedupe = sb.dedupePorTelefone;
-  const url = base + "/rest/v1/" + encodeURIComponent(sb.tabela) + (dedupe ? "?on_conflict=telefone" : "");
-
-  if(location.protocol === "file:")
-    log("ATENÇÃO: a página está aberta como arquivo local (file://). Alguns navegadores bloqueiam o envio. Use um servidor ou publique no Render.");
-
-  log("POST " + url);
-  log("dados: " + JSON.stringify(dados));
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "apikey": sb.anonKey,
-      "Authorization": "Bearer " + sb.anonKey,
-      "Content-Type": "application/json",
-      "Prefer": dedupe ? "return=minimal,resolution=ignore-duplicates" : "return=minimal"
-    },
-    body: JSON.stringify(dados)
-  })
-  .then(r => r.text().then(t => {
-    if(r.ok){ log("OK " + r.status + " — linha gravada."); return; }
-    log("ERRO " + r.status + " — " + t);
-    document.getElementById("status").textContent = "Falha ao salvar (" + r.status + "). Veja o console.";
-  }))
-  .catch(e => {
-    log("FALHA DE REDE/CORS — " + e.message);
-    document.getElementById("status").textContent = "Falha de conexão ao salvar. Veja o console.";
-  });
-}
-
-function enviarWebhook(dados){
-  // form-urlencoded evita o preflight de CORS e é lido direto pelo Make/Apps Script
-  fetch(CONFIG.webhook, {
-    method: "POST",
-    body: new URLSearchParams(dados),
-    keepalive: true
-  }).catch(e => console.warn("[roleta] falha no envio:", e));
-}
-
-/* ---- validação do formulário ---- */
-function erro(campo, on){
-  document.getElementById(campo).setAttribute("aria-invalid", on ? "true" : "false");
-  document.getElementById("e-"+campo).classList.toggle("on", on);
-}
-document.getElementById("liberar").addEventListener("click", () => {
-  const email = document.getElementById("email").value.trim();
-  const tel = telefoneE164(document.getElementById("tel").value);
-  const okMail = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email);
-  const okTel = tel !== "";
-  erro("email", !okMail); erro("tel", !okTel);
-  if(!(okMail && okTel)) return;
-
-  liberado = true;
-  document.getElementById("formCard").style.display = "none";
-  window.scrollTo({ top:0, behavior: menosMovimento ? "auto" : "smooth" });
-
-  document.getElementById("status").textContent = "Giro liberado. Toque no centro da roleta.";
-  document.getElementById("girar").focus();
-});
-
-/* ---- botão girar ---- */
-document.getElementById("girar").addEventListener("click", () => {
-  if(rodando) return;
-  if(restantes() <= 0){ document.getElementById("overlay").classList.add("on"); return; }
-  if(!liberado){
-    document.getElementById("status").textContent = "Preencha seus dados abaixo para liberar o giro.";
-    document.getElementById("email").focus();
-    return;
+    if(t < 1){ requestAnimationFrame(tick); }
+    else{
+      setTimeout(function(){
+        document.getElementById("loading").classList.add("hide");
+        document.getElementById("done").classList.remove("hide");
+      }, 400);
+    }
   }
-  rodando = true; girosUsados++;
-  document.getElementById("girar").disabled = true;
-  document.getElementById("girar").textContent = "…";
-  document.getElementById("status").textContent = "";
-  girarPara(sortear());
-});
-
-/* ---- modal ---- */
-document.getElementById("fechar").addEventListener("click", () => {
-  document.getElementById("overlay").classList.remove("on");
-  atualizarBotao();
-});
-document.getElementById("denovo").addEventListener("click", () => {
-  document.getElementById("overlay").classList.remove("on");
-  atualizarBotao();
-  document.getElementById("girar").click();
-});
-document.getElementById("copiar").addEventListener("click", async (e) => {
-  try{
-    await navigator.clipboard.writeText(document.getElementById("premioCupom").textContent);
-    e.target.textContent = "Código copiado";
-  }catch(err){ e.target.textContent = "Copie o código acima"; }
-});
-
-/* ---- nitidez em telas retina ---- */
-function ajustar(){
-  const larg = cv.getBoundingClientRect().width;
-  const dpr = Math.max(2, Math.min(window.devicePixelRatio || 1, 3));
-  const px = Math.round(larg * dpr);
-  if(px && px !== cv.width){ cv.width = px; cv.height = px; desenhar(); }
-}
-window.addEventListener("resize", ajustar);
-ajustar();
+  requestAnimationFrame(tick);
+})();
 </script>
 </body>
 </html>
